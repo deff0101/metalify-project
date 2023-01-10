@@ -8,12 +8,12 @@ import { db } from '../config/firebaseConfig';
 import { collection, query, where, getDocs,updateDoc,arrayUnion, } from 'firebase/firestore'
 
 function SongGroup({song,i,user}) {
-    
     const ref=useRef()
     const dispatch=useDispatch();
     const [isActive,setIsActive] = useState(false)
     const [playlist,setPlaylist]= useState([])
     const {isPlaying,activeSong,songQueue,recentPlay,playlistSongId} = useSelector(state => state.player)
+
     const handlePlay = (song,i) =>{
         dispatch(playPause(true));
         dispatch(setActiveSong({song,i}))
@@ -40,22 +40,19 @@ function SongGroup({song,i,user}) {
             return songs
         }
     }
-
-    // this useEffect exist for initialize playlist state, to conditional render FolderPlusIcon components
-    useEffect(() => {
-        const getPlaylist = async()=>{
-            setPlaylist(await getDataCollection())
-        }
-        if(user) getPlaylist()
-    }, [user])
+    
     const handleEllipsis=async()=>{
         setIsActive(prev=>!prev)
         
     }
     const handleAddSong= async (playlistName,song) =>{
+        setIsActive(prev=>!prev)
        const [songs] = await getDataCollection(playlistName)
        console.log(songs,"get song")
-       if(songs.length >= 4){
+       if(songs.includes(song.key)){
+        alert(`you already have ${song.subtitle} - ${song.title} on ${playlistName} playlist`)
+       }
+       else if(songs.length >= 4){
         alert("Due to API limit, you cannot add another songs")
        }else{
             const key=song.key
@@ -81,6 +78,15 @@ function SongGroup({song,i,user}) {
             }
         }
     }
+
+    // this useEffect exist for initialize playlist state, to conditional render FolderPlusIcon components
+    useEffect(() => {
+        const getPlaylist = async()=>{
+            setPlaylist(await getDataCollection())
+        }
+        if(user) getPlaylist()
+    }, [user])
+
     useEffect(() => {
         const checkIfClickedOutside = e => {
           // If the menu is open and the clicked target is not within the menu,

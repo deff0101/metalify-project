@@ -8,13 +8,14 @@ import { skipToken } from '@reduxjs/toolkit/dist/query'
 import { songData } from '../assets/songData2'
 import { PlayIcon,PauseIcon,EllipsisVerticalIcon } from '@heroicons/react/24/solid'
 import { setActiveSong,playPause } from '../features/services/playerSlice'
+import { ScaleLoader } from 'react-spinners'
 
 
 function Search({user}) {
     const dispatch=useDispatch();
     const [searchValue,setSearchValue]=useState('')
     const [searchTerm,setSearchTerm]=useState('')
-    const {data:searchData,isFetching, error,isSuccess} = useGetSongBySearchQuery( searchTerm.length !== 0 ? searchTerm : skipToken)
+    const {data:searchData,isFetching, error,isSuccess,isLoading} = useGetSongBySearchQuery( searchTerm.length !== 0 ? searchTerm : skipToken)
     const {isPlaying,activeSong} = useSelector(state => state.player)
     // const [trigger,result] = useLazyGetSongBySearchQuery()
     const handleChange= (e) =>{
@@ -42,17 +43,20 @@ function Search({user}) {
         }
     }, [searchValue])
     console.log(!searchTerm ? true:false)
-
     return (
         <div className='px-2'>
             <div className='relative max-w-[368px]'>
                 <MagnifyingGlassIcon className='w-6 h-6 absolute m-auto inset-y-0 left-2'/>
                 <input className='w-full h-[35px] px-[48px] rounded-[20px]' onChange={handleChange} type="text" value={searchValue} placeholder="Search Song / Artist"/>
             </div>
-            {isFetching && <p className='text-white absolute'> searching ..</p>}
+            {isFetching &&
+                <div className='absolute top-0 h-[calc(100vh-90px)] w-full flex items-center justify-center'>
+                    <ScaleLoader color="#2bc77c" height={15} width={2} margin={1}/>
+                </div>
+            }
             {error && <p className='text-red-400'>sorry failed to search song</p>}
             {!isFetching && isSuccess && !data  && <p className='text-red-400'>No Song available</p>}
-            {data &&
+            {(!isFetching && data) &&
             <div className='grid md:grid-cols-[0.6fr,1fr] gap-x-3 text-white mt-5 md:mt-16'>
                 <div className='grid'>
                     <div className='font-[700] ml-4 text-white text-[2rem] tracking-tight truncate'><p>Top Result</p></div>
@@ -89,10 +93,10 @@ function Search({user}) {
                 </div>
             </div>
             }
-            {data && 
+            {(!isFetching && data ) &&
                 <section className='mt-5'>
                         <div className='overflow-hidden'>
-                            <h1 className='font-[700] ml-4 text-white text-[2rem] truncate tracking-tight'>Related to "{!isSuccess ? "" : searchTerm}"</h1>
+                            <h1 className='font-[700] ml-4 text-white text-[2rem] truncate tracking-tight'>Related to "{isLoading  ? "" : searchTerm}"</h1>
                             {/* <h1 className='font-[700] ml-4 text-white text-[2rem] tracking-tight'>Songs Related to "{searchTerm}"</h1> */}
                         </div>
                     <div className="overflow-x-scroll md:overflow-hidden overflow-y-hidden

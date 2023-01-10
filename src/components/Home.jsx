@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { playPause, setActiveSong } from '../features/services/playerSlice';
 import { useGetWorldChartsQuery,useGetLocalChartsQuery } from '../features/services/shazamCore';
 import SongCard from './SongCard'
+import {ScaleLoader} from "react-spinners";
 
 function Home() {
     const {recentPlay,isPlaying,activeSong,songQueue} = useSelector(state => state.player);
@@ -11,6 +12,7 @@ function Home() {
     const worldChartData = worldChart?.tracks;
     const localChartData = localChart?.tracks?.filter(song=> song?.hub?.actions);
     const dispatch = useDispatch()
+
     const handlePlay = (song,data,i) =>{
         if(data){
             console.log(data)
@@ -24,10 +26,17 @@ function Home() {
             dispatch(setActiveSong({song}))
         }
     }
+
     const handlePause = () => {
         dispatch(playPause(false));
       };
-      console.log(localChartData?.filter(song=> song?.hub?.actions))
+    if(worldChartIsFetching || localChartIsFetching ){
+        return(
+            <div className='h-[calc(100vh-90px)] w-full flex items-center justify-center'>
+                <ScaleLoader color="#2bc77c" height={15} width={2} margin={1}/>
+            </div>
+        )
+    }
     return (
         <div className='text-gray-300'>
             <div>

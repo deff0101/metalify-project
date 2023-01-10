@@ -51,14 +51,14 @@ function Center({user}) {
                         </button>
                     </div>
                     {user ?
-                        <div className='flex gap-1 bg-[#1b1b1b92] rounded-md px-1'>
+                        <div className='flex gap-1 bg-[#1b1b1b92] rounded-md px-1 pl-2'>
                             <span className='text-white'>{user?.displayName}</span>
                             <PowerIcon onClick={handleSignOut} className='text-white w-6 h-6 cursor-pointer rounded-md hover:text-[#fb2b2b] ease-in duration-150' />
                         </div>
                         :
                         <div>
                             <button onClick={()=> googleSignIn()} 
-                                className=' text-white bg-spotify-green rounded-[40px] w-20 md:w-24 md:h-10 hover:bg-spotify-green-light py-1 font-bold ease-in duration-100'>Login</button>
+                                className=' text-white md:text-base text-sm rounded-[40px] w-20 md:w-24 md:h-10 bg-spotify-green-light py-1 font-bold ease-in duration-100'>Login</button>
                         </div>    
                     }
                 </div>

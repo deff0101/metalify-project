@@ -3,6 +3,7 @@ import { useParams,useNavigate } from 'react-router-dom'
 import { PlayIcon,PauseIcon, } from '@heroicons/react/24/solid'
 import { HeartIcon,MinusCircleIcon,TrashIcon } from '@heroicons/react/24/outline'
 import PlayGif from '../../src/assets/music.gif'
+import { BeatLoader } from 'react-spinners'
 
 //redux
 import { useDispatch,useSelector } from 'react-redux';
@@ -151,6 +152,7 @@ function PlaylistDetail({user}) {
         
 }, [JSON.stringify(playlistSongId?.[playlistName]),playlistName])
 console.log("component render")
+console.log(result,"result from lazy")
     return (
         // <p> {playlistName}</p>
         //     { data && data.map((song,i) => {
@@ -201,7 +203,6 @@ console.log("component render")
                 <span>Title</span>
             </div>
             <div className='pt-3 pb-16'>
-                { result.isFetching &&<p>Loading</p>}
                    {
                      songList && songList?.song?.map((d,i)=>{
                             let c=1;
@@ -236,6 +237,7 @@ console.log("component render")
                             
                         })
                    }
+                   { result.isFetching && <BeatLoader color="#2bc77c" size={6} margin={2} className="m-auto" />}
             </div>
             {/* <p className='text-2xl font-[700]'>RECOMENDED</p>
             <div className='pt-2'>
